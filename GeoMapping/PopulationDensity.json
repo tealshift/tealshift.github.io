@@ -1,0 +1,5 @@
+{
+    "label":{"30":"Viken","01":"Ãstfold","02":"Akershus","06":"Buskerud","03":"Oslo","34":"Innlandet","04":"Hedmark","05":"Oppland","38":"Vestfold og Telemark","07":"Vestfold","08":"Telemark","42":"Agder","09":"Aust-Agder","10":"Vest-Agder","11":"Rogaland","46":"Vestland","12":"Hordaland","13":"Bergen","14":"Sogn og Fjordane","15":"Møre og Romsdal","50":"Trøndelag - Trööndelage","16":"Sør-Trøndelag","17":"Nord-Trøndelag","18":"Nordland","54":"Troms og Finnmark - Romsa ja Finnmárku","19":"Troms","20":"Finnmark","21":"Svalbard","22":"Jan Mayen","23":"The Continental Shelf","25":"Abroad","26":"Ocean areas","88":"Not resident in Norway","99":"County not stated"},
+    "value":[0,77,136,21,1597,0,8,8,0,117,13,0,14,28,55,0,36,0,6,19,12,15,6,7,0,7,2,0,0,0,0,0,0,0],
+    "index":{"30":0,"01":1,"02":2,"06":3,"03":4,"34":5,"04":6,"05":7,"38":8,"07":9,"08":10,"42":11,"09":12,"10":13,"11":14,"46":15,"12":16,"13":17,"14":18,"15":19,"50":20,"16":21,"17":22,"18":23,"54":24,"19":25,"20":26,"21":27,"22":28,"23":29,"25":30,"26":31,"88":32,"99":33}
+}

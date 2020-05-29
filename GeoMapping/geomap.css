@@ -1,0 +1,21 @@
+body {
+    background-color: #333;
+    color: #CCC;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: white;
+  shape-rendering: crispEdges;
+}
+
+.dot {
+  stroke: white;
+}
+
+.grid line {
+  stroke: white;
+  stroke-opacity: 0.3;
+  shape-rendering: crispEdges;
+}

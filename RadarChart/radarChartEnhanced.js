@@ -204,7 +204,7 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 	blobWrapper
 	.append("path")
 	.attr("class", "radarArea")
-	.attr("d", d => radarLine(d.axes))
+	.attr("d", d => radarLine([{value: 0}, {value: 0}, {value: 0}, {value: 0}, {value: 0}]))
 	.style("fill", (d,i) => cfg.color(i))
 	.style("fill-opacity", cfg.opacityArea)
 	.on('mouseover', function(d, i) {
@@ -222,16 +222,20 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 		parent.selectAll(".radarArea")
 		.transition().duration(200)
 		.style("fill-opacity", cfg.opacityArea);
-	});
+	})
+	.transition().duration(1000).ease(d3.easeElasticOut)
+	.attr("d", d => radarLine(d.axes))
 
 	//Create the outlines
 	blobWrapper.append("path")
 	.attr("class", "radarStroke")
-	.attr("d", function(d,i) { return radarLine(d.axes); })
+	.attr("d", (d,i) => radarLine([{value: 0}, {value: 0}, {value: 0}, {value: 0}, {value: 0}]))
 	.style("stroke-width", cfg.strokeWidth + "px")
 	.style("stroke", (d,i) => cfg.color(i))
 	.style("fill", "none")
-	.style("filter" , "url(#glow)");
+	.style("filter" , "url(#glow)")
+	.transition().duration(1000).ease(d3.easeElasticOut)
+	.attr("d", d => radarLine(d.axes))
 
 	//Append the circles
 	blobWrapper.selectAll(".radarCircle")
@@ -240,10 +244,13 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 	.append("circle")
 	.attr("class", "radarCircle")
 	.attr("r", cfg.dotRadius)
+	.style("fill", (d) => cfg.color(d.id))
+	.style("fill-opacity", 0.8)
+	.attr("cx", 0)
+	.attr("cy", 0)
+	.transition().duration(1000).ease(d3.easeElasticOut)
 	.attr("cx", (d,i) => rScale(d.value) * cos(angleSlice * i - HALF_PI))
 	.attr("cy", (d,i) => rScale(d.value) * sin(angleSlice * i - HALF_PI))
-	.style("fill", (d) => cfg.color(d.id))
-	.style("fill-opacity", 0.8);
 
 	/////////////////////////////////////////////////////////
 	//////// Append invisible circles for tooltip ///////////

@@ -11,7 +11,7 @@ const sin = Math.sin;
 const cos = Math.cos;
 const HALF_PI = Math.PI / 2;
 
-const RadarChart = function RadarChart(parent_selector, data, options) {
+const RadarChart = function RadarChart(parent_selector, data, axes, options) {
 	//Wraps SVG text - Taken from http://bl.ocks.org/mbostock/7555321
 	const wrap = (text, width) => {
 		text.each(function() {
@@ -44,7 +44,6 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 		h: 600,				//Height of the circle
 		margin: {top: 20, right: 20, bottom: 20, left: 20}, //The margins of the SVG
 		levels: 3,				//How many levels or inner circles should there be drawn
-		maxValue: 0, 			//What is the value that the biggest circle will represent
 		labelFactor: 1.25, 	//How much farther than the radius of the outer circle should the labels be placed
 		wrapWidth: 60, 		//The number of pixels after which a label needs to be given a new line
 		opacityArea: 0.35, 	//The opacity of the area of the blob
@@ -52,7 +51,7 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 		opacityCircles: 0.1, 	//The opacity of the circles of each blob
 		strokeWidth: 2, 		//The width of the stroke around each blob
 		roundStrokes: false,	//If true the area and stroke will follow a round path (cardinal-closed)
-		color: d3.scaleOrdinal(d3.schemeCategory10),	//Color function,
+		colors: d3.scaleOrdinal(["blue", "orange", "green"]),	//Color function,
 		format: '.2%',
 		unit: '',
 		legend: false
@@ -65,29 +64,18 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 		}//for i
 	}//if
 
-	//If the supplied maxValue is smaller than the actual one, replace by the max in the data
-	// var maxValue = max(cfg.maxValue, d3.max(data, function(i){return d3.max(i.map(function(o){return o.value;}))}));
-	let maxValue = 0;
-	for (let j=0; j < data.length; j++) {
-		for (let i = 0; i < data[j].axes.length; i++) {
-			data[j].axes[i]['id'] = data[j].name;
-			if (data[j].axes[i]['value'] > maxValue) {
-				maxValue = data[j].axes[i]['value'];
-			}
-		}
-	}
-	maxValue = max(cfg.maxValue, maxValue);
+	const radius = Math.min(cfg.w/2, cfg.h/2), 	//Radius of the outermost circle
+	formatter = d3.format(cfg.format),			//Formatting
+	angleSlice = Math.PI * 2 / axes.length;		//The width in radians of each "slice"
 
-	const allAxis = data[0].axes.map((i, j) => i.axis),	//Names of each axis
-	total = allAxis.length,					//The number of different axes
-	radius = Math.min(cfg.w/2, cfg.h/2), 	//Radius of the outermost circle
-	Format = d3.format(cfg.format),			 	//Formatting
-	angleSlice = Math.PI * 2 / total;		//The width in radians of each "slice"
-
+	const rScales = []
 	//Scale for the radius
-	const rScale = d3.scaleLinear()
-	.range([0, radius])
-	.domain([0, maxValue]);
+	for (var axis of axes) {
+		const rScale = d3.scaleLinear()
+		.range([0, radius])
+		.domain([axis.min, axis.max]);
+		rScales.push(rScale)
+	}
 
 	/////////////////////////////////////////////////////////
 	//////////// Create the container SVG and g /////////////
@@ -147,7 +135,7 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 	.attr("dy", "0.4em")
 	.style("font-size", "10px")
 	.attr("fill", "#737373")
-	.text(d => Format(maxValue * d / cfg.levels) + cfg.unit);
+	.text(d => formatter(axes[0].max * d / cfg.levels) + cfg.unit);
 
 	/////////////////////////////////////////////////////////
 	//////////////////// Draw the axes //////////////////////
@@ -155,7 +143,7 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 
 	//Create the straight lines radiating outward from the center
 	var axis = axisGrid.selectAll(".axis")
-	.data(allAxis)
+	.data(axes)
 	.enter()
 	.append("g")
 	.attr("class", "axis");
@@ -163,8 +151,8 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 	axis.append("line")
 	.attr("x1", 0)
 	.attr("y1", 0)
-	.attr("x2", (d, i) => rScale(maxValue *1.1) * cos(angleSlice * i - HALF_PI))
-	.attr("y2", (d, i) => rScale(maxValue* 1.1) * sin(angleSlice * i - HALF_PI))
+	.attr("x2", (d, i) => rScales[i](d.max*1.1) * cos(angleSlice * i - HALF_PI))
+	.attr("y2", (d, i) => rScales[i](d.max*1.1) * sin(angleSlice * i - HALF_PI))
 	.attr("class", "line")
 	.style("stroke", "white")
 	.style("stroke-width", "2px");
@@ -175,9 +163,9 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 	.style("font-size", "11px")
 	.attr("text-anchor", "middle")
 	.attr("dy", "0.35em")
-	.attr("x", (d,i) => rScale(maxValue * cfg.labelFactor) * cos(angleSlice * i - HALF_PI))
-	.attr("y", (d,i) => rScale(maxValue * cfg.labelFactor) * sin(angleSlice * i - HALF_PI))
-	.text(d => d)
+	.attr("x", (d,i) => rScales[i](d.max * cfg.labelFactor) * cos(angleSlice * i - HALF_PI))
+	.attr("y", (d,i) => rScales[i](d.max * cfg.labelFactor) * sin(angleSlice * i - HALF_PI))
+	.text(d => d.name)
 	.call(wrap, cfg.wrapWidth);
 
 	/////////////////////////////////////////////////////////
@@ -187,7 +175,7 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 	//The radial line function
 	const radarLine = d3.radialLine()
 	.curve(d3.curveLinearClosed)
-	.radius(d => rScale(d.value))
+	.radius((d,i) => rScales[i](d))
 	.angle((d,i) => i * angleSlice);
 
 	if(cfg.roundStrokes) {
@@ -204,8 +192,8 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 	blobWrapper
 	.append("path")
 	.attr("class", "radarArea")
-	.attr("d", d => radarLine([{value: 0}, {value: 0}, {value: 0}, {value: 0}, {value: 0}]))
-	.style("fill", (d,i) => cfg.color(i))
+	.attr("d", d => radarLine([0,0,0,0,0]))
+	.style("fill", (d,i) => cfg.colors(i))
 	.style("fill-opacity", cfg.opacityArea)
 	.on('mouseover', function(d, i) {
 		//Dim all blobs
@@ -224,33 +212,35 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 		.style("fill-opacity", cfg.opacityArea);
 	})
 	.transition().duration(1000).ease(d3.easeElasticOut)
-	.attr("d", d => radarLine(d.axes))
+	.attr("d", d => radarLine(d.values))
 
 	//Create the outlines
 	blobWrapper.append("path")
 	.attr("class", "radarStroke")
-	.attr("d", (d,i) => radarLine([{value: 0}, {value: 0}, {value: 0}, {value: 0}, {value: 0}]))
+	.attr("d", radarLine([0,0,0,0,0]))
 	.style("stroke-width", cfg.strokeWidth + "px")
-	.style("stroke", (d,i) => cfg.color(i))
+	.style("stroke", (d,i) => cfg.colors(i))
 	.style("fill", "none")
 	.style("filter" , "url(#glow)")
 	.transition().duration(1000).ease(d3.easeElasticOut)
-	.attr("d", d => radarLine(d.axes))
+	.attr("d", d => radarLine(d.values))
 
-	//Append the circles
+	//Append the data dots
 	blobWrapper.selectAll(".radarCircle")
-	.data(d => d.axes)
+	.data((d,i) => d.values.map(v => {return {v:v, i:i}}))
 	.enter()
 	.append("circle")
 	.attr("class", "radarCircle")
 	.attr("r", cfg.dotRadius)
-	.style("fill", (d) => cfg.color(d.id))
+	.style("fill", (d) => {
+		return cfg.colors(d.i)
+	})
 	.style("fill-opacity", 0.8)
 	.attr("cx", 0)
 	.attr("cy", 0)
 	.transition().duration(1000).ease(d3.easeElasticOut)
-	.attr("cx", (d,i) => rScale(d.value) * cos(angleSlice * i - HALF_PI))
-	.attr("cy", (d,i) => rScale(d.value) * sin(angleSlice * i - HALF_PI))
+	.attr("cx", (d,i) => rScales[i](d.v) * cos(angleSlice * i - HALF_PI))
+	.attr("cy", (d,i) => rScales[i](d.v) * sin(angleSlice * i - HALF_PI))
 
 	/////////////////////////////////////////////////////////
 	//////// Append invisible circles for tooltip ///////////
@@ -264,21 +254,21 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 
 	//Append a set of invisible circles on top for the mouseover pop-up
 	blobCircleWrapper.selectAll(".radarInvisibleCircle")
-	.data(d => d.axes)
+	.data(d => d.values)
 	.enter().append("circle")
 	.attr("class", "radarInvisibleCircle")
 	.attr("r", cfg.dotRadius * 1.5)
-	.attr("cx", (d,i) => rScale(d.value) * cos(angleSlice*i - HALF_PI))
-	.attr("cy", (d,i) => rScale(d.value) * sin(angleSlice*i - HALF_PI))
+	.attr("cx", (v,i) => rScales[i](v) * cos(angleSlice*i - HALF_PI))
+	.attr("cy", (v,i) => rScales[i](v) * sin(angleSlice*i - HALF_PI))
 	.style("fill", "none")
 	.style("pointer-events", "all")
-	.on("mouseover", function(d,i) {
+	.on("mouseover", function(v,i) {
 		tooltip
 		.attr('x', this.cx.baseVal.value - 10)
 		.attr('y', this.cy.baseVal.value - 10)
 		.transition()
 		.style('display', 'block')
-		.text(Format(d.value) + cfg.unit);
+		.text(formatter(v) + cfg.unit);
 	})
 	.on("mouseout", function(){
 		tooltip.transition()
@@ -321,7 +311,7 @@ const RadarChart = function RadarChart(parent_selector, data, options) {
 		.attr("y", (d,i) => i * 20)
 		.attr("width", 10)
 		.attr("height", 10)
-		.style("fill", (d,i) => cfg.color(i));
+		.style("fill", (d,i) => cfg.colors(i));
 		// Create labels
 		legend.selectAll('text')
 		.data(names)

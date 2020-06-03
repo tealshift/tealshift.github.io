@@ -126,16 +126,16 @@ const RadarChart = function RadarChart(parent_selector, data, axes, options) {
 	.style("filter" , "url(#glow)");
 
 	//Text indicating at what % each level is
-	axisGrid.selectAll(".axisLabel")
-	.data(d3.range(1,(cfg.levels+1)).reverse())
-	.enter().append("text")
-	.attr("class", "axisLabel")
-	.attr("x", 4)
-	.attr("y", d => -d * radius / cfg.levels)
-	.attr("dy", "0.4em")
-	.style("font-size", "10px")
-	.attr("fill", "#737373")
-	.text(d => formatter(axes[0].max * d / cfg.levels) + cfg.unit);
+	// axisGrid.selectAll(".axisLabel")
+	// .data(d3.range(1,(cfg.levels+1)).reverse())
+	// .enter().append("text")
+	// .attr("class", "axisLabel")
+	// .attr("x", 4)
+	// .attr("y", d => -d * radius / cfg.levels)
+	// .attr("dy", "0.4em")
+	// .style("font-size", "10px")
+	// .attr("fill", "#737373")
+	// .text(d => formatter(axes[0].max * d / cfg.levels) + cfg.unit);
 
 	/////////////////////////////////////////////////////////
 	//////////////////// Draw the axes //////////////////////
@@ -151,8 +151,8 @@ const RadarChart = function RadarChart(parent_selector, data, axes, options) {
 	axis.append("line")
 	.attr("x1", 0)
 	.attr("y1", 0)
-	.attr("x2", (d, i) => rScales[i](d.max*1.1) * cos(angleSlice * i - HALF_PI))
-	.attr("y2", (d, i) => rScales[i](d.max*1.1) * sin(angleSlice * i - HALF_PI))
+	.attr("x2", (d, i) => radius * cos(angleSlice * i - HALF_PI))
+	.attr("y2", (d, i) => radius * sin(angleSlice * i - HALF_PI))
 	.attr("class", "line")
 	.style("stroke", "white")
 	.style("stroke-width", "2px");
@@ -163,8 +163,8 @@ const RadarChart = function RadarChart(parent_selector, data, axes, options) {
 	.style("font-size", "11px")
 	.attr("text-anchor", "middle")
 	.attr("dy", "0.35em")
-	.attr("x", (d,i) => rScales[i](d.max * cfg.labelFactor) * cos(angleSlice * i - HALF_PI))
-	.attr("y", (d,i) => rScales[i](d.max * cfg.labelFactor) * sin(angleSlice * i - HALF_PI))
+	.attr("x", (d,i) => radius * cfg.labelFactor * cos(angleSlice * i - HALF_PI))
+	.attr("y", (d,i) => radius * cfg.labelFactor * sin(angleSlice * i - HALF_PI))
 	.text(d => d.name)
 	.call(wrap, cfg.wrapWidth);
 

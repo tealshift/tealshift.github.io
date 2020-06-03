@@ -109,11 +109,11 @@ function loadChart(players, animation) {
 	    wrapWidth: 100,
 	    // The format string controls the number precision
 	    // E.g. change to '.1f' to show the tenth's place decimal
-		format: '.0f',
+		format: '.2f',
 	    // This controls the position and title for the legend
 		legend: { title: 'Rocket League Players', translateX: 100, translateY: 40 },
 	    // Unit is appended to the number labels
-		unit: '%'
+		unit: '/game'
 	};
 	console.log("Radar chart configuration:")
 	console.log(radarChartOptions)

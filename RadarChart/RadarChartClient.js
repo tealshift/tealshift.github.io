@@ -19,7 +19,7 @@ const axes = [
 	{name: "Assists",         unit: "/game", min:0.2, max:1},
 	{name: "Saves",           unit: "/game", min:0.3, max:2.5},
 	{name: "Demos inflicted", unit: "/game", min:0, max:2.7},
-	{name: "Demos suffered (inversed)", unit: "/game", min:1, max:0},
+	{name: "Demos suffered (inversed)", unit: "/game", min:0.95, max:0},
 ]
 function rowConvert(row, index, columns) {
 	console.log(`Parsing row: ${JSON.stringify(row)}`)

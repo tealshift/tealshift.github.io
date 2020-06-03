@@ -154,7 +154,7 @@ const RadarChart = function RadarChart(parent_selector, data, axes, options) {
 	.attr("x2", (d, i) => radius * cos(angleSlice * i - HALF_PI))
 	.attr("y2", (d, i) => radius * sin(angleSlice * i - HALF_PI))
 	.attr("class", "line")
-	.style("stroke", "white")
+	.style("stroke", "#AAA")
 	.style("stroke-width", "2px");
 
 	//Append the labels at each axis
@@ -273,6 +273,7 @@ const RadarChart = function RadarChart(parent_selector, data, axes, options) {
 		.attr('y', this.cy.baseVal.value - 10)
 		.transition()
 		.style('display', 'block')
+		.style("fill", "white")
 		.text(formatter(v) + cfg.unit);
 	})
 	.on("mouseout", function(){

@@ -15,83 +15,111 @@ height = 400 - margin.top - margin.bottom;
 // - Demos taken
 
 const axes = [
-	{name: "Goals",           min:0, max:5},
-	{name: "Assists",         min:0, max:2},
-	{name: "Saves",           min:0, max:3},
-	{name: "Demos inflicted", min:0, max:3},
-	{name: "Demos taken",     min:2, max:0},
+	{name: "Goals",           unit: "/game", min:0, max:2.5},
+	{name: "Assists",         unit: "/game", min:0, max:1},
+	{name: "Saves",           unit: "/game", min:0, max:2.5},
+	{name: "Demos inflicted", unit: "/game", min:0, max:3},
+	{name: "Demos taken",     unit: "/game", min:1, max:0},
 ]
-const players = [{
-	name: 'SquishyMuffinz',
-	values: [
-		2.13,
-		0.95,
-		1.37,
-		0.74,
-		0.5
-	]
-},
-// The data array can contain any number of elements
-// but more than 3 is hard to read because of overlap.
-{
-	name: 'Kronovi',
-	values: [
-		1,
-		1,
-		1,
-		1,
-		1
-	]
-}];
-console.log("Data to show:")
-console.log(players)
+function rowConvert(row, index, columns) {
+	console.log(`Parsing row: ${JSON.stringify(row)}`)
+	const {player, goals, assists, saves} = row
+	const demos = row['demos inflicted']
+	const demosTaken = row['demos taken']
+	return {name: player, values: [goals, assists, saves, demos, demosTaken]}
+}
+d3.csv('playerStats.csv', rowConvert).then((players) => {
+	console.log("Data to show:")
+	console.log(players)
 
-const selectBox = d3.select('body')
-.append('select')
-.attr('class','select')
-.attr('id','playerSelectBox')
-.on('change', ()=>{
-	playerSelected = d3.select('#playerSelectBox').property('value')
-	console.log(`Player selected: ${playerSelected}`)
+	var selected1 = -1, selected2 = -1 // Current selection
+	var selection1 = 0, selection2 = 1 // New selection
+
+	function reloadChart() {
+		// Copy players from menu list
+		const player1 = Object.assign({}, players[selection1])
+		const player2 = Object.assign({}, players[selection2])
+		// Animate each only if they change
+		player1.animate = selection1 !== selected1
+		player2.animate = selection2 !== selected2
+		// Update selection state
+		selected1 = selection1
+		selected2 = selection2
+		loadChart([player1, player2])
+	}
+
+	const selectBox1 = d3.select('#select1')
+	.attr('class','select')
+	.on('change', ()=>{
+		playerSelected = selectBox1.property('value')
+		selection1 = selectBox1.property('selectedIndex')
+		console.log(`Player 1 selected: ${playerSelected}`)
+		reloadChart()
+		updateMenus()
+	})
+	const selectBox2 = d3.select('#select2')
+	.attr('class','select')
+	.on('change', (i)=>{
+		playerSelected = selectBox2.property('value')
+		selection2 = selectBox2.property('selectedIndex')
+		console.log(`Player 2 selected: ${playerSelected} ${selected2}`)
+		reloadChart()
+		updateMenus()
+	})
+
+	function updateMenus() {
+		selectBox1.selectAll('option')
+		.data(players).enter()
+		.append('option')
+		.property("value", (d,i)=>d.name)
+	    .property("selected", (d,i)=>i==selection1)
+	    // .property("disabled", (d,i)=>i==selection2)
+		.text(d=>d.name)
+
+		selectBox2.selectAll('option')
+		.data(players).enter()
+		.append('option')
+		.property("value", (d,i)=>d.name)
+	    .property("selected", (d,i)=>i==selection2)
+	    // .property("disabled", (d,i)=>i==selection1)
+		.text(d=>d.name)
+	}
+	updateMenus()
+	reloadChart()
 })
 
-const playerOptions = selectBox
-.selectAll('option')
-.data(players)
-.enter()
-.append('option')
-.text(d=>d.name)
+function loadChart(players, animation) {
+	///// Chart legend, custom color, custom unit, etc. //////////
+	var radarChartOptions = {
+		w: width,
+		h: height,
+		margin: margin,
+	    // Max value determines the maximum of the chart range.
+		maxValue: 100,
+	    // Levels determines how many concentric circles appear in the background of the chart. These circles show a label for their position in the range.
+		levels: 5,
+	    // roundStrokes determines whether to connect the dots with straight lines or smooth curves
+		roundStrokes: true,
+		animate: animation,
+	    // Color provides the color for the blob of each player,
+	    // in their order. I.e. Player 1 - blue, Player 2 - orange
+		colors: d3.scaleOrdinal().range(["blue", "orange"]),
+	    // Wrap width changes how much space is allowed before a line break
+	    // Word wrapping code provided by: https://bl.ocks.org/mbostock/7555321
+	    wrapWidth: 100,
+	    // The format string controls the number precision
+	    // E.g. change to '.1f' to show the tenth's place decimal
+		format: '.0f',
+	    // This controls the position and title for the legend
+		legend: { title: 'Rocket League Players', translateX: 100, translateY: 40 },
+	    // Unit is appended to the number labels
+		unit: '%'
+	};
+	console.log("Radar chart configuration:")
+	console.log(radarChartOptions)
 
-
-///// Chart legend, custom color, custom unit, etc. //////////
-var radarChartOptions = {
-	w: width,
-	h: height,
-	margin: margin,
-    // Max value determines the maximum of the chart range.
-	maxValue: 100,
-    // Levels determines how many concentric circles appear in the background of the chart. These circles show a label for their position in the range.
-	levels: 5,
-    // roundStrokes determines whether to connect the dots with straight lines or smooth curves
-	roundStrokes: true,
-    // Color provides the color for the blob of each player,
-    // in their order. I.e. Player 1 - blue, Player 2 - orange
-	colors: d3.scaleOrdinal().range(["blue", "orange"]),
-    // Wrap width changes how much space is allowed before a line break
-    // Word wrapping code provided by: https://bl.ocks.org/mbostock/7555321
-    wrapWidth: 100,
-    // The format string controls the number precision
-    // E.g. change to '.1f' to show the tenth's place decimal
-	format: '.0f',
-    // This controls the position and title for the legend
-	legend: { title: 'Game 4', translateX: 100, translateY: 40 },
-    // Unit is appended to the number labels
-	unit: '%'
-};
-console.log("Radar chart configuration:")
-console.log(radarChartOptions)
-
-// Draw the chart, get a reference the created svg element :
-let svg_radar = RadarChart(".radarChart", players, axes, radarChartOptions)
-.style("border-radius", "15px")
-.style("background-color", "#222")
+	// Draw the chart, get a reference the created svg element :
+	let svg_radar = RadarChart(".radarChart", players, axes, radarChartOptions)
+	.style("border-radius", "15px")
+	.style("background-color", "#222")
+}

@@ -211,7 +211,8 @@ const RadarChart = function RadarChart(parent_selector, data, axes, options) {
 		.transition().duration(200)
 		.style("fill-opacity", cfg.opacityArea);
 	})
-	.transition().duration(1000).ease(d3.easeElasticOut)
+	.transition().duration(d=>d.animate ? 1000 : 0)
+	.ease(d3.easeElasticOut)
 	.attr("d", d => radarLine(d.values))
 
 	//Create the outlines
@@ -222,12 +223,15 @@ const RadarChart = function RadarChart(parent_selector, data, axes, options) {
 	.style("stroke", (d,i) => cfg.colors(i))
 	.style("fill", "none")
 	.style("filter" , "url(#glow)")
-	.transition().duration(1000).ease(d3.easeElasticOut)
+	.transition().duration(d=>d.animate ? 1000 : 0)
+	.ease(d3.easeElasticOut)
 	.attr("d", d => radarLine(d.values))
 
 	//Append the data dots
 	blobWrapper.selectAll(".radarCircle")
-	.data((d,i) => d.values.map(v => {return {v:v, i:i}}))
+	.data((d,i) => d.values.map(v => {
+		return {v:v, i:i, animate:d.animate}
+	}))
 	.enter()
 	.append("circle")
 	.attr("class", "radarCircle")
@@ -238,7 +242,8 @@ const RadarChart = function RadarChart(parent_selector, data, axes, options) {
 	.style("fill-opacity", 0.8)
 	.attr("cx", 0)
 	.attr("cy", 0)
-	.transition().duration(1000).ease(d3.easeElasticOut)
+	.transition().duration(d=>d.animate ? 1000 : 0)
+	.ease(d3.easeElasticOut)
 	.attr("cx", (d,i) => rScales[i](d.v) * cos(angleSlice * i - HALF_PI))
 	.attr("cy", (d,i) => rScales[i](d.v) * sin(angleSlice * i - HALF_PI))
 
@@ -294,7 +299,6 @@ const RadarChart = function RadarChart(parent_selector, data, axes, options) {
 			.attr("x", cfg.w - 70)
 			.attr("y", 10)
 			.attr("font-size", "12px")
-			.attr("fill", "#404040")
 			.text(cfg.legend.title);
 		}
 		let legend = legendZone.append("g")
@@ -320,7 +324,6 @@ const RadarChart = function RadarChart(parent_selector, data, axes, options) {
 		.attr("x", cfg.w - 52)
 		.attr("y", (d,i) => i * 20 + 9)
 		.attr("font-size", "11px")
-		.attr("fill", "#737373")
 		.text(d => d);
 	}
 	return svg;

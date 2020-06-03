@@ -71,10 +71,18 @@ const RadarChart = function RadarChart(parent_selector, data, axes, options) {
 	const rScales = []
 	//Scale for the radius
 	for (var axis of axes) {
-		const rScale = d3.scaleLinear()
-		.range([0, radius])
-		.domain([axis.min, axis.max]);
-		rScales.push(rScale)
+		if (axis.max > axis.min) {
+			const rScale = d3.scaleSqrt()
+			.range([0, radius])
+			.domain([axis.min, axis.max]);
+			rScales.push(rScale)
+		} else {
+			const rScale = d3.scaleLinear()
+			// .exponent(2)
+			.range([0, radius])
+			.domain([axis.min, axis.max]);
+			rScales.push(rScale)
+		}
 	}
 
 	/////////////////////////////////////////////////////////

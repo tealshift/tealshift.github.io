@@ -274,6 +274,7 @@ const RadarChart = function RadarChart(parent_selector, data, axes, options) {
 		.transition()
 		.style('display', 'block')
 		.style("fill", "white")
+		.style("pointer-events", "none")
 		.text(formatter(v) + cfg.unit);
 	})
 	.on("mouseout", function(){

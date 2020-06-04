@@ -158,12 +158,12 @@ const BarChart = function BarChart(parent_selector, data, axes, options) {
 	.attr("fill", cfg.colors(0))
 	.attr("x", (d,i)=>xScale(axes[i].name)+xScale.bandwidth()/2)
 	.attr("y", (d,i)=>yScale(d))
-	.attr("height", "2px")
+	.attr("height", "2.5px")
 	.attr("width", 0)
     .transition().duration(data[0].animate ? 2000 : 0)
     .ease(d3.easeElasticOut)
-	.attr("x", (d,i)=>xScale(axes[i].name)+xScale.bandwidth()*0.1/2)
-    .attr("width", xScale.bandwidth()*0.9+"px")
+	.attr("x", (d,i)=>xScale(axes[i].name)+xScale.bandwidth()*0.2/2)
+    .attr("width", xScale.bandwidth()*0.8+"px")
 	.style("filter" , "url(#glow)")
 
 	/////////////////////////////////////////////////////////

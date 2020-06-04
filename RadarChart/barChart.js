@@ -118,10 +118,11 @@ const BarChart = function BarChart(parent_selector, data, axes, options) {
 	.attr("class", "x axis")
 	.attr("transform", `translate(0, ${height})`)
 	.call(xAxis)
-	.style("stroke", "#CDCDCD")
+
 	// Move the labels off the axis line
 	// .style("text-anchor", "middle")
 	.selectAll(".tick text")
+	.style("fill", "white")
     .call(wrap, xScale.bandwidth());
 
 	let axisYGroup = g.append("g")

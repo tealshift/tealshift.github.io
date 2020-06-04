@@ -109,7 +109,8 @@ function loadRadarChart(players) {
 	    // This controls the position and title for the legend
 		legend: { title: 'Rocket League Players', translateX: 100, translateY: 40 },
 	    // Unit is appended to the number labels
-		unit: '/game'
+		unit: '/game',
+		opacityCircles: 0.04
 	};
 	console.log("Radar chart configuration:")
 	console.log(radarChartOptions)

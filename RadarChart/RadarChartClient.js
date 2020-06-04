@@ -142,7 +142,7 @@ function loadBarChart(players) {
 	    // This controls the position and title for the legend
 		legend: { title: 'Rocket League Players', translateX: -80, translateY: 40 },
 	    // Unit is appended to the number labels
-		unit: 'Average # per game'
+		unit: 'Occurrences per game (average)'
 	};
 
 	// Draw the chart, get a reference the created svg element :

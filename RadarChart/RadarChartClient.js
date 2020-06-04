@@ -139,7 +139,7 @@ function loadBarChart(players) {
 		barPadding: 0.2,
 	    // Color provides the color for the blob of each player,
 	    // in their order. I.e. Player 1 - blue, Player 2 - orange
-		colors: d3.scaleOrdinal(["blue", "orange"]),
+		colors: d3.scaleOrdinal(["#05F", "orange"]),
 	    // Wrap width changes how much space is allowed before a line break
 	    // Word wrapping code provided by: https://bl.ocks.org/mbostock/7555321
 	    wrapWidth: 100,

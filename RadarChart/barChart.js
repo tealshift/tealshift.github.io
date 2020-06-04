@@ -90,10 +90,10 @@ const BarChart = function BarChart(parent_selector, data, axes, options) {
 	//Append a g element
 	let g = svg.append("g")
 	.attr("transform", "translate(" +cfg.margin.left+ "," +cfg.margin.top+ ")");
-	g.append("rect")
-	.attr("width", width)
-	.attr("height", height)
-	.attr("fill", "#555")
+	// g.append("rect")
+	// .attr("width", width)
+	// .attr("height", height)
+	// .attr("fill", "#555")
 
 	var xAxis = d3.axisBottom(xScale);
 	var yAxis = d3.axisLeft(yScale).ticks(5);

@@ -122,7 +122,7 @@ function loadRadarChart(players) {
 
 function loadBarChart(players) {
 	///// Chart legend, custom color, custom unit, etc. //////////
-	const margin = { top: 30, right: 40, bottom: 100, left: 80 },
+	const margin = { top: 30, right: 40, bottom: 50, left: 80 },
 		width = 500,
 		height = 400
 	var radarChartOptions = {

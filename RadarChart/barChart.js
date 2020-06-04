@@ -213,7 +213,9 @@ const BarChart = function BarChart(parent_selector, data, axes, options) {
 		.attr("y", (d,i) => i * 20)
 		.attr("width", 10)
 		.attr("height", 10)
-		.style("fill", (d,i) => cfg.colors(i));
+		.style("fill", (d,i) => cfg.colors(i))
+		.style("stroke", "white")
+		.style("stroke-width", "0.5px");
 		// Create labels
 		legend.selectAll('text')
 		.data(names)

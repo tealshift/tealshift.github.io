@@ -170,7 +170,7 @@ const BarChart = function BarChart(parent_selector, data, axes, options) {
 		.text(formatter(d) + axes[i].unit)
 		.style('display', 'block')
 		.transition().ease(d3.easeQuadOut)
-		.attr('y', this.y.baseVal.value - 8)
+		.attr('y', this.y.baseVal.value - 6)
 		.on('end', function () {
             tooltip.raise()
         });

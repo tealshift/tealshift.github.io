@@ -130,7 +130,18 @@ const BarChart = function BarChart(parent_selector, data, axes, options) {
 	.call(yAxis)
 	.style("stroke", "#CDCDCD")
 
-	g.selectAll(".bar")
+	const tooltip = g.append("text")
+	.attr("class", "tooltip")
+	.attr('x', 0)
+	.attr('y', 0)
+	.style("font-size", "12px")
+	.style("fill", "white")
+	.style('display', 'none')
+	.attr("text-anchor", "middle")
+	.attr("dy", "0.35em")
+	.style("pointer-events", "none")
+
+	const bars = g.selectAll(".bar")
     // .data() binds our data
     .data(data[1].values)
     // .enter() returns a placeholder reference to each new element
@@ -142,14 +153,32 @@ const BarChart = function BarChart(parent_selector, data, axes, options) {
 	.attr("y", height)
 	.attr("height", 0)
     // Next add some animation to introduce the data
-    .transition().duration(data[1].animate ? 1000 : 0)
+    bars.transition().duration(data[1].animate ? 1000 : 0)
 	.ease(d3.easeElasticOut)
     // Position the bar using the scales created earlier
     .attr("y", (d,i)=>yScale(d))
     // Width is the same for each bar
     .attr("width", xScale.bandwidth()+"px")
     .attr("height", (d)=>height-yScale(d)+"px")
+	.style("stroke", "white")
+	.style("stroke-width", "0.5px")
 	// .style("filter" , "url(#glow)")
+	bars.on("mouseover", function(v,i) {
+		tooltip.lower()
+		tooltip
+		.attr('x', xScale(axes[i].name)+xScale.bandwidth()/2)
+		.attr('y', this.y.baseVal.value + 12)
+		.text(formatter(v) + axes[i].unit)
+		.style('display', 'block')
+		.transition()
+		.attr('y', this.y.baseVal.value - 12)
+		.on('end', function () {
+            tooltip.raise()
+        });
+	})
+	.on("mouseout", function(){
+		tooltip.style('display', 'none').text('');
+	});
 
 	g.selectAll(".comparison")
     .data(data[0].values)
@@ -165,6 +194,8 @@ const BarChart = function BarChart(parent_selector, data, axes, options) {
     .ease(d3.easeElasticOut)
 	.attr("x", (d,i)=>xScale(axes[i].name)+xScale.bandwidth()*0.2/2)
     .attr("width", xScale.bandwidth()*0.8+"px")
+	.style("stroke", "white")
+	.style("stroke-width", "0.5px")
 	.style("filter" , "url(#glow)")
 
 	/////////////////////////////////////////////////////////
@@ -178,15 +209,6 @@ const BarChart = function BarChart(parent_selector, data, axes, options) {
         .attr("y", -(cfg.margin.left / 2 + 5)) // Position the label nicely horizontal
         .attr("transform", "rotate(-90)")
         .style("text-anchor", "middle")
-
-	const tooltip = g.append("text")
-	.attr("class", "tooltip")
-	.attr('x', 0)
-	.attr('y', 0)
-	.style("font-size", "12px")
-	.style('display', 'none')
-	.attr("text-anchor", "middle")
-	.attr("dy", "0.35em");
 
 	if (cfg.legend !== false && typeof cfg.legend === "object") {
 		let legendZone = svg.append('g');
@@ -211,9 +233,9 @@ const BarChart = function BarChart(parent_selector, data, axes, options) {
 		.enter()
 		.append("rect")
 		.attr("x", cfg.w - 65)
-		.attr("y", (d,i) => i * 20)
+		.attr("y", (d,i) => i * 20 + (i==0 ? 3.75 : 0))
 		.attr("width", 10)
-		.attr("height", 10)
+		.attr("height", (d,i) => i==0 ? 2.5 : 10)
 		.style("fill", (d,i) => cfg.colors(i))
 		.style("stroke", "white")
 		.style("stroke-width", "0.5px");

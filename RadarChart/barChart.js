@@ -130,23 +130,21 @@ const BarChart = function BarChart(parent_selector, data, axes, options) {
 	.call(yAxis)
 	.style("stroke", "#CDCDCD")
 
-	const tooltip = g.append("text")
-	.attr("class", "tooltip")
-	.attr('x', 0)
-	.attr('y', 0)
+	const barGroups = g.selectAll(".barGroup")
+    .data(data[1].values)
+    .enter()
+    .append("g")
+	.attr("class", "barGroup")
+
+	barGroups.append("text")
+	.attr("class", (d,i)=>`tooltip${i}`)
 	.style("font-size", "12px")
 	.style("fill", "white")
 	.style('display', 'none')
 	.attr("text-anchor", "middle")
-	.attr("dy", "0.35em")
 	.style("pointer-events", "none")
 
-	const bars = g.selectAll(".bar")
-    // .data() binds our data
-    .data(data[1].values)
-    // .enter() returns a placeholder reference to each new element
-    .enter()
-    .append("rect")
+	const bars = barGroups.append("rect")
 	.attr("class", "bar")
 	.attr("fill", cfg.colors(1))
 	.attr("x", (d,i)=>xScale(axes[i].name))
@@ -163,31 +161,35 @@ const BarChart = function BarChart(parent_selector, data, axes, options) {
 	.style("stroke", "white")
 	.style("stroke-width", "0.5px")
 	// .style("filter" , "url(#glow)")
-	bars.on("mouseover", function(v,i) {
+	bars.on("mouseover", function(d,i) {
+		const tooltip = barGroups.select(`.tooltip${i}`)
 		tooltip.lower()
 		tooltip
 		.attr('x', xScale(axes[i].name)+xScale.bandwidth()/2)
 		.attr('y', this.y.baseVal.value + 12)
-		.text(formatter(v) + axes[i].unit)
+		.text(formatter(d) + axes[i].unit)
 		.style('display', 'block')
-		.transition()
-		.attr('y', this.y.baseVal.value - 12)
+		.transition().ease(d3.easeQuadOut)
+		.attr('y', this.y.baseVal.value - 8)
 		.on('end', function () {
             tooltip.raise()
         });
 	})
-	.on("mouseout", function(){
-		tooltip.style('display', 'none').text('');
+	.on("mouseout", function(d,i){
+		const tooltip = barGroups.select(`.tooltip${i}`)
+		tooltip.lower()
+		.transition().ease(d3.easeQuadIn)
+		.attr('y', this.y.baseVal.value + 12)
+		.on('end', function () {
+            tooltip.style('display', 'none').text('');
+        });
 	});
 
-	g.selectAll(".comparison")
-    .data(data[0].values)
-    .enter()
-    .append("rect")
+	barGroups.append("rect")
 	.attr("class", "comparison")
 	.attr("fill", cfg.colors(0))
 	.attr("x", (d,i)=>xScale(axes[i].name)+xScale.bandwidth()/2)
-	.attr("y", (d,i)=>yScale(d))
+	.attr("y", (d,i)=>yScale(data[0].values[i]))
 	.attr("height", "2.5px")
 	.attr("width", 0)
     .transition().duration(data[0].animate ? 2000 : 0)

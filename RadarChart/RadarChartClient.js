@@ -79,11 +79,11 @@ d3.csv('playerStats.csv', rowConvert).then((players) => {
 
 function loadRadarChart(players) {
 	const axes = [
-		{name: "Goals",           unit: "/game", min:0.3, max:2.5},
-		{name: "Assists",         unit: "/game", min:0.2, max:1},
-		{name: "Saves",           unit: "/game", min:0.3, max:2.5},
-		{name: "Demos inflicted", unit: "/game", min:-0.01, max:3},
-		{name: "Demos suffered (inversed)", unit: "/game", min:0.95, max:0},
+		{name: "Goals",           unit: "/game", min:0.19, max:2.5},
+		{name: "Assists",         unit: "/game", min:0.17, max:1},
+		{name: "Saves",           unit: "/game", min:0.17, max:2.5},
+		{name: "Demos inflicted", unit: "/game", min:-0.07, max:3},
+		{name: "Demos suffered (inversed)", unit: "/game", min:1.05, max:0},
 	]
 	///// Chart legend, custom color, custom unit, etc. //////////
 	const margin = { top: 80, right: 100, bottom: 50, left: 100 },

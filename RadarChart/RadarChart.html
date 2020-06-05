@@ -16,19 +16,27 @@
 	<script src="barChart.js" charset="utf-8"></script>
 </head>
 <body>
-	<h1>Rocket League Player Stats</h1>
+	<h1>Rocket League Player Comparison</h1>
 	<div style="display: inline-flex">
 		<div class="barChart" style="display: inline-flex; width: 80%"></div>
-		<div class="sidebarMenu" style="width: 20%; margin: 5px">
-            <p>Blue:</p>
+		<div class="sidebarMenu" style="width: 120px; margin: 8px">
+			<img style="width: 100px" src="https://www.festivalclaca.cat/imgfv/b/158-1589866_com-img-rocket-league-logo-rocket-league-logo.png">
+            <br/><br/>
+			<label style="font-size: 14px">Blue:</label>
 			<select id="select1"></select>
-            <p>Orange:</p>
+			<br/><br/>
+            <label style="font-size: 14px">Orange:</label>
 			<select id="select2"></select>
         </div>
     	<div class="radarChart" style="display: inline-flex; width: 80%;"></div>
 	</div>
 	<div style="text-align: left; font-size: 15px">
-		<p>This chart shows per-game average stats for various Rocket League players. Most of the listed players are professionals.</p>
+		<div style="max-width: 500px; margin:0 auto;">
+			<p>	This chart shows per-game average stats for various Rocket League players.
+				Select players from the dropdown menus for comparison.
+				Hover over the graphs for the numbers.
+			</p>
+		</div>
 		<p>Rocket League is a popular soccer video game played with rocket-powered cars. In the game you can:</p>
 		<ul>
             <li>get a goal by scoring the ball</li>

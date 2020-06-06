@@ -137,9 +137,18 @@ const BarChart = function BarChart(parent_selector, data, axes, options) {
 	.attr("class", "barGroup")
 
 	barGroups.append("text")
-	.attr("class", (d,i)=>`tooltip${i}`)
+	.attr("class", (d,i)=>`bartip${i}`)
 	.style("font-size", "12px")
 	.style("fill", "white")
+	.style('display', 'none')
+	.attr("text-anchor", "middle")
+	.style("pointer-events", "none")
+
+	barGroups.append("text")
+	.attr("class", (d,i)=>`linetip${i}`)
+	.style("font-size", "12px")
+	.style("fill", cfg.colors(0))
+	.style("stroke", cfg.colors(0))
 	.style('display', 'none')
 	.attr("text-anchor", "middle")
 	.style("pointer-events", "none")
@@ -162,7 +171,7 @@ const BarChart = function BarChart(parent_selector, data, axes, options) {
 	.style("stroke-width", "0.5px")
 	// .style("filter" , "url(#glow)")
 	bars.on("mouseover", function(d,i) {
-		const tooltip = barGroups.select(`.tooltip${i}`)
+		const tooltip = barGroups.select(`.bartip${i}`)
 		tooltip.lower()
 		tooltip
 		.attr('x', xScale(axes[i].name)+xScale.bandwidth()/2)
@@ -170,35 +179,63 @@ const BarChart = function BarChart(parent_selector, data, axes, options) {
 		.text(formatter(d) + axes[i].unit)
 		.style('display', 'block')
 		.transition().ease(d3.easeQuadOut)
-		.attr('y', this.y.baseVal.value - 6)
+		.attr('y', this.y.baseVal.value - 5)
 		.on('end', function () {
             tooltip.raise()
         });
 	})
 	.on("mouseout", function(d,i){
-		const tooltip = barGroups.select(`.tooltip${i}`)
+		const tooltip = barGroups.select(`.bartip${i}`)
 		tooltip.lower()
 		.transition().ease(d3.easeQuadIn)
 		.attr('y', this.y.baseVal.value + 12)
 		.on('end', function () {
-            tooltip.style('display', 'none').text('');
+            tooltip.style('display', 'none')
         });
 	});
 
-	barGroups.append("rect")
+	const lines = barGroups.append("rect")
 	.attr("class", "comparison")
 	.attr("fill", cfg.colors(0))
 	.attr("x", (d,i)=>xScale(axes[i].name)+xScale.bandwidth()/2)
 	.attr("y", (d,i)=>yScale(data[0].values[i]))
 	.attr("height", "2.5px")
 	.attr("width", 0)
-    .transition().duration(data[0].animate ? 2000 : 0)
+    lines.transition().duration(data[0].animate ? 2000 : 0)
     .ease(d3.easeElasticOut)
 	.attr("x", (d,i)=>xScale(axes[i].name)+xScale.bandwidth()*0.2/2)
     .attr("width", xScale.bandwidth()*0.8+"px")
 	.style("stroke", "white")
 	.style("stroke-width", "0.5px")
 	.style("filter" , "url(#glow)")
+
+	const selectRects = barGroups.append("rect")
+	.attr("class", "selectRect")
+	.attr("opacity", "0")
+	.attr("x", (d,i)=>xScale(axes[i].name)+xScale.bandwidth()*0.2/2)
+	.attr("y", (d,i)=>yScale(data[0].values[i]) - 3)
+	.attr("width", xScale.bandwidth()*0.8+"px")
+	.attr("height", "8px")
+	selectRects.on("mouseover", function(d,i) {
+		const v = data[0].values[i]
+		const tooltip = barGroups.select(`.linetip${i}`)
+		tooltip.raise()
+		.attr('x', xScale(axes[i].name)+xScale.bandwidth()/2)
+		.attr('y', this.y.baseVal.value - 3)
+		.text(formatter(v) + axes[i].unit)
+		.style('display', 'block')
+		.style('opacity', 0)
+		.transition().ease(d3.easeQuadOut)
+		.style('opacity', 1)
+	})
+	.on("mouseout", function(d,i){
+		const tooltip = barGroups.select(`.linetip${i}`)
+		.transition().ease(d3.easeQuadIn)
+		.style('opacity', 0)
+		.on('end', () => {
+            tooltip.style('display', 'none')
+        })
+	})
 
 	/////////////////////////////////////////////////////////
 	//////////////////// Draw the axes //////////////////////

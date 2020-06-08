@@ -69,7 +69,7 @@ const RadarChart = function RadarChart(parent_selector, data, axes, options) {
 		radius = Math.min(width/2, height/2) 	//Radius of the outermost circle
 
 	const rScales = []
-	//Scale for the radius
+	// Create a scale for each axis based on provided min and max values.
 	for (var axis of axes) {
 		if (axis.max > axis.min) {
 			const rScale = d3.scaleSqrt()
@@ -132,18 +132,6 @@ const RadarChart = function RadarChart(parent_selector, data, axes, options) {
 	.style("stroke", "#CDCDCD")
 	.style("fill-opacity", cfg.opacityCircles)
 	.style("filter" , "url(#glow)");
-
-	//Text indicating at what % each level is
-	// axisGrid.selectAll(".axisLabel")
-	// .data(d3.range(1,(cfg.levels+1)).reverse())
-	// .enter().append("text")
-	// .attr("class", "axisLabel")
-	// .attr("x", 4)
-	// .attr("y", d => -d * radius / cfg.levels)
-	// .attr("dy", "0.4em")
-	// .style("font-size", "10px")
-	// .attr("fill", "#737373")
-	// .text(d => formatter(axes[0].max * d / cfg.levels) + cfg.unit);
 
 	/////////////////////////////////////////////////////////
 	//////////////////// Draw the axes //////////////////////

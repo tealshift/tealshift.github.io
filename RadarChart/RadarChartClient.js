@@ -1,5 +1,4 @@
-// RadarChart function for D3 provided by:
-// http://bl.ocks.org/Kuerzibe/338052519b1d270b9cd003e0fbfb712e
+// This project can be found at: https://tealshift.github.io/RadarChart/RadarChart.html
 
 ////////////////////////// Data //////////////////////////////
 // Rocket League player characteristics (per game):
@@ -70,7 +69,6 @@ d3.csv('playerStats.csv', rowConvert).then((players) => {
 		.append('option')
 		.property("value", (d,i)=>d.name)
 	    .property("selected", (d,i)=>i==selection2)
-	    // .property("disabled", (d,i)=>i==selection1)
 		.text(d=>d.name)
 	}
 	updateMenus()
@@ -104,7 +102,7 @@ function loadRadarChart(players) {
 	    // Word wrapping code provided by: https://bl.ocks.org/mbostock/7555321
 	    wrapWidth: 100,
 	    // The format string controls the number precision
-	    // E.g. change to '.1f' to show the tenth's place decimal
+	    // E.g. change to '.1f' to show only the tenth's place decimal
 		format: '.2f',
 	    // This controls the position and title for the legend
 		legend: { title: 'Rocket League Players', translateX: 100, translateY: 40 },
@@ -133,7 +131,7 @@ function loadBarChart(players) {
 	const margin = { top: 30, right: 40, bottom: 50, left: 80 },
 		width = 500,
 		height = 400
-	var radarChartOptions = {
+	var barChartOptions = {
 		w: width,
 		h: height,
 		margin: margin,
@@ -154,7 +152,7 @@ function loadBarChart(players) {
 	};
 
 	// Draw the chart, get a reference the created svg element :
-	let svg_radar = BarChart(".barChart", players, axes, radarChartOptions)
+	let svg_radar = BarChart(".barChart", players, axes, barChartOptions)
 	.style("border-radius", "15px")
 	.style("background-color", "#222")
 }

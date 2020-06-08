@@ -1,0 +1,8 @@
+I took the Radar Chart project from Kuerzibe and upgraded it with EMCA 6 syntax and additional functionality:
+- Independent scales for each axis
+- Animated transitions
+This upgraded version of the radar chart extension is in the file radarChartEnhanced.js
+
+I created my own bar chart to sit alongside the enhanced radar chart. To show the same data with a common scale. This chart includes tooltips for accessing the exact numbers.
+I added a selection menu between the charts to allow users to select whichever data they want to compare.
+I pulled data from Ballchasing.com to present Rocket League player statistics in the unified interface. I put the statistics into a CSV file from which the visualization draws its data.

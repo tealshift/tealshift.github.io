@@ -1,9 +1,7 @@
-// Provided by: http://bl.ocks.org/Kuerzibe/338052519b1d270b9cd003e0fbfb712e
+// This is an enhanced version of: http://bl.ocks.org/Kuerzibe/338052519b1d270b9cd003e0fbfb712e
 /////////////////////////////////////////////////////////
-/////////////// The Radar Chart Function ////////////////
-/// mthh - 2017 /////////////////////////////////////////
-// Inspired by the code of alangrafu and Nadieh Bremer //
-// (VisualCinnamon.com) and modified for d3 v4 //////////
+/////////////// The Radar Chart (Enhanced) //////////////
+/// Alex Weiner - 2020 //////////////////////////////////
 /////////////////////////////////////////////////////////
 
 const max = Math.max;

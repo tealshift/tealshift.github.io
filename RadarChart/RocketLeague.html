@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/ >
+	<title>Rocket League Player Comparison</title>
+	<!-- Stylesheet ref -->
+	<link rel="stylesheet" type="text/css" href="radarchart.css">
+	<!-- Google fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300" rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+
+	<!-- D3.js -->
+	<script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
+	<script src="https://d3js.org/d3-path.v1.min.js" charset="utf-8"></script>
+	<script src="radarChartEnhanced.js" charset="utf-8"></script>
+	<script src="barChart.js" charset="utf-8"></script>
+</head>
+<body>
+	<h1>Rocket League Player Comparison</h1>
+	<div style="display: inline-flex">
+		<div class="barChart" style="display: inline-flex; width: 80%"></div>
+		<div class="sidebarMenu" style="width: 120px; margin: 8px">
+			<img style="width: 100px" src="https://www.festivalclaca.cat/imgfv/b/158-1589866_com-img-rocket-league-logo-rocket-league-logo.png">
+            <br/><br/>
+			<label style="font-size: 14px">Blue:</label>
+			<select id="select1"></select>
+			<br/><br/>
+            <label style="font-size: 14px">Orange:</label>
+			<select id="select2"></select>
+        </div>
+    	<div class="radarChart" style="display: inline-flex; width: 80%;"></div>
+	</div>
+	<div style="margin-left: 40px; margin-right: 40px; text-align: left; font-size: 15px">
+		<div style="max-width: 500px; margin:0 auto;">
+			<p>	This chart shows per-game average stats for various Rocket League players.
+				Select players from the dropdown menus for comparison.
+				Hover over the graphs for the numbers.
+			</p>
+		</div>
+		<p>Rocket League is a popular soccer video game played with rocket-powered cars. Achievements in the game include:</p>
+		<ul>
+            <li><b>Goal</b>: Scoring the ball in opponent's net</li>
+            <li><b>Assist</b>: Passing to a teammate who then scores a goal</li>
+            <li><b>Save</b>: Blocking an opponent's shot on your goal</li>
+            <li><b>Inflict Demo</b>: Demolition by ramming an opponent at full speed which temporarily removes them from the field</li>
+			<li><b>Suffer Demo</b>: Getting yourself demolished by an opponent</li>
+        </ul>
+		<br/>
+		<p>This project by Alex Weiner in collaboration with Suresh Lodha.</p>
+		<a href="https://github.com/tealshift/tealshift.github.io">View the source on my GitHub repo</a>
+        <br/><br/>
+
+        <label> References: </label>
+        <ul>
+            <li>Player stats: <a href="https://ballchasing.com">Ballchasing.com</a></li>
+            <li>D3 API Reference</li>
+            <li>Interactive Data Visualization for the Web</li>
+            <li><a href="http://bl.ocks.org/Kuerzibe/338052519b1d270b9cd003e0fbfb712e">Kuerzibe's Radar Chart base</a></li>
+        </ul>
+        <p>UC Santa Cruz, CSE 163: Data programming for Visualization, Spring 2020</p>
+	</div>
+
+    <script src="RadarChartClient.js" charset="utf-8"></script>
+</body>
+</html>
